@@ -1,3 +1,11 @@
+/*
+ * Date: 02.04.21
+ * Abstract: This project is a login and landing page for an
+ *  android app that uses a fake REST API with Retrofit.
+ *  The purpose of this project is to gain experience with
+ *  APIs, Android Studio, and test driven development.
+*/
+
 package com.example.week2;
 
 import androidx.appcompat.app.AppCompatActivity;

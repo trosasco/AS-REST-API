@@ -15,7 +15,19 @@ public class ExampleUnitTest {
         assertEquals(4, 2 + 2);
     }
 
-    //Test that user was created
+    //Test that username is created correctly
+    @Test
+    public void checkUsername() {
+        String username = "test";
+        Users testUser = new Users(0, username, "password");
+        assertEquals(testUser.getUsername(), username);
+    }
 
-    //Test that user password matches their username
+    //Test that password is created correctly
+    @Test
+    public void checkPassword() {
+        String password = "password";
+        Users testUser = new Users(0, "test", password);
+        assertEquals(testUser.getPassword(), password);
+    }
 }
