@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    //Variables for shared preferences
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String USERNAME = "username";
+    public static final String ID = "id";
 
     private String mUsername;
     private String mPassword;
@@ -69,19 +75,28 @@ public class MainActivity extends AppCompatActivity {
                     if (mUsername.equals(user.getUsername())) {
                         //Check if password is correct
                         if (mPassword.equals(user.getPassword())) {
+                            //Set shared preferences
+                            SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                            editor.putString(USERNAME, mUsername);
+                            editor.putInt(ID, user.getUserId());
+                            editor.apply();
+
                             //Go to landing page
-                            Intent startIntent = LandingActivity.intentFactory(getApplicationContext());
+                            Intent startIntent = LandingActivity.intentFactory(getApplicationContext(), user.getUserId());
                             startActivity(startIntent);
                         } else {
                             //If password not correct, highlight password field and display message
                             Toast.makeText(MainActivity.this, "Invalid Password. Please try again.", Toast.LENGTH_LONG).show();
                             passwordInput.requestFocus();
+                            break;
                         }
-                    } else {
-                        //If username not found, highlight username field and display message
-                        Toast.makeText(MainActivity.this, "Invalid Username. Please try again.", Toast.LENGTH_LONG).show();
-                        usernameInput.requestFocus();
                     }
+                    //If username not found, highlight username field and display message
+                    Toast.makeText(MainActivity.this, "Invalid Username. Please try again.", Toast.LENGTH_LONG).show();
+                    usernameInput.requestFocus();
+                    break;
                 }
 
             }
