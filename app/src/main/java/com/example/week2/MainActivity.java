@@ -70,37 +70,46 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 getValuesFromDisplay();
 
-                for (Users user : mUsers) {
-                    //Check if username is found in list of users
-                    if (mUsername.equals(user.getUsername())) {
-                        //Check if password is correct
-                        if (mPassword.equals(user.getPassword())) {
-                            //Set shared preferences
-                            SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                            editor.putString(USERNAME, mUsername);
-                            editor.putInt(ID, user.getUserId());
-                            editor.apply();
-
-                            //Go to landing page
-                            Intent startIntent = LandingActivity.intentFactory(getApplicationContext(), user.getUserId());
-                            startActivity(startIntent);
-                        } else {
-                            //If password not correct, highlight password field and display message
-                            Toast.makeText(MainActivity.this, "Invalid Password. Please try again.", Toast.LENGTH_LONG).show();
-                            passwordInput.requestFocus();
-                            break;
-                        }
-                    }
-                    //If username not found, highlight username field and display message
-                    Toast.makeText(MainActivity.this, "Invalid Username. Please try again.", Toast.LENGTH_LONG).show();
-                    usernameInput.requestFocus();
-                    break;
-                }
+                validateUsername();
 
             }
         });
+    }
+
+    //Check if username is found in list of users
+    private boolean validateUsername() {
+        for (Users user : mUsers) {
+            if (mUsername.equals(user.getUsername())) {
+                validatePassword(user);
+                return true;
+            }
+        }
+        //If username not found, highlight username field and display message
+        Toast.makeText(MainActivity.this, "Invalid Username. Please try again.", Toast.LENGTH_LONG).show();
+        usernameInput.requestFocus();
+        return false;
+    }
+
+    //Check if password is correct
+    private boolean validatePassword(Users user) {
+        if (mPassword.equals(user.getPassword())) {
+            //Set shared preferences
+            SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            editor.putString(USERNAME, mUsername);
+            editor.putInt(ID, user.getUserId());
+            editor.apply();
+
+            //Go to landing page
+            Intent startIntent = LandingActivity.intentFactory(getApplicationContext(), user.getUserId());
+            startActivity(startIntent);
+            return true;
+        }
+        //If password not correct, highlight password field and display message
+        Toast.makeText(MainActivity.this, "Invalid Password. Please try again.", Toast.LENGTH_LONG).show();
+        passwordInput.requestFocus();
+        return false;
     }
 
     //Gets username and password from user input
